@@ -1,4 +1,11 @@
 package com.example.specialmovies.presentation.screens.movies
 
-class MoviesScreenContent {
+import androidx.compose.runtime.Composable
+
+
+@Composable
+fun MoviesScreenContent(
+
+) {
+
 }

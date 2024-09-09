@@ -72,6 +72,7 @@ dependencies {
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
+    implementation(libs.kotlinx.coroutines.android)
 
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.kotlinx.serialization.json)
@@ -89,7 +90,8 @@ dependencies {
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
 
-
+    implementation(libs.hilt.android.v244)
+    kapt(libs.hilt.android.compiler.v244)
     //Room
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.compiler)
