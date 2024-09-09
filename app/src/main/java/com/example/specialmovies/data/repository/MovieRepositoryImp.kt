@@ -1,15 +1,21 @@
 package com.example.specialmovies.data.repository
 
+import android.util.Log
+import android.view.WindowInsetsAnimation
 import com.example.specialmovies.data.local.dao.MovieDao
 import com.example.specialmovies.data.local.entity.MovieEntity
 import com.example.specialmovies.data.remote.responses.MovieDetailsResponse
 import com.example.specialmovies.data.remote.responses.MoviesListResponse
 import com.example.specialmovies.data.remote.retrofit.WebServices
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.builtins.serializer
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import javax.inject.Inject
 import javax.inject.Singleton
-
 
 
 @Singleton
@@ -17,18 +23,22 @@ class MovieRepositoryImp @Inject constructor(
     private val apiService: WebServices,
     private val movieDao: MovieDao,
 ) : MovieRepository() {
-    // Get Popular Movies with Pagination
-
-    private val apiKey: String=""
+    private val apiKey: String = "b8d7f72abee18fd93012e158e9211297"
 
     override suspend fun getPopularMovies(page: Int): MoviesListResponse {
         return withContext(Dispatchers.IO) {
-            val response = apiService.getMovies(apiKey, page)
-            (if (response.isSuccessful) {
-                response.body()
-            } else {
-                null
-            })!!
+            try {
+                val response = apiService.getMovies(apiKey, page)
+                (if (response.isSuccessful) {
+                    response.body()
+                } else {
+                    MoviesListResponse()
+                })!!
+            }catch (e:Exception){
+              MoviesListResponse()
+            }
+
+
         }
     }
 

@@ -8,7 +8,6 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface WebServices {
-
     @GET("movie/popular")
     suspend fun getMovies(
         @Query("api_key") apiKey: String,

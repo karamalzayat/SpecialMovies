@@ -26,44 +26,37 @@ import kotlinx.coroutines.flow.StateFlow
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private val viewModel: MoviesViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            MainApp(viewModel.uiState)
+            MainApp()
         }
     }
 }
 
 @Composable
-fun MainApp(uiState: StateFlow<UiState<Routes, Any>>) {
+fun MainApp() {
     Surface(
         modifier = Modifier.fillMaxSize(),
     ) {
-        MainAppNavHost(uiState)
+        MainAppNavHost()
     }
 }
 
 @Composable
 fun MainAppNavHost(
-    uiState: StateFlow<UiState<Routes, Any>>,
     navController: NavHostController = rememberNavController()
 ) {
-    val state = uiState.collectAsStateWithLifecycle()
-    val startDestination = state.value.data
-    if (startDestination != Routes.MoviesList) {
-        NavHost(navController, startDestination = startDestination) {
+
+        NavHost(navController, startDestination = Routes.MoviesList) {
             MoviesListNavigationFactory().create(this, navController)
             MovieDetailsNavigationFactory().create(this, navController)
-        }
     }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
-    val state =
-        MutableStateFlow<UiState<Routes, Any>>(UiState(Routes.MoviesList, State.Success("")))
-    MainApp(state)
+   MainApp()
 }

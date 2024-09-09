@@ -11,8 +11,7 @@ internal class MoviesListNavigationFactory : ComposeNavigationFactory {
         navGraphBuilder.composable<Routes.MoviesList> {
             MoviesScreen(
                 onNavigateToMovieDetailsRoute = {
-                    navController.navigate(route = Routes.MovieDetails("")) {
-                        popUpTo(Routes.MoviesList) { inclusive = true }
+                    navController.navigate(route = Routes.MovieDetails("154989")) {
                     }
                 })
         }

@@ -12,7 +12,6 @@ internal class MovieDetailsNavigationFactory : ComposeNavigationFactory {
             MovieDetailsScreen(
                 onNavigateToMoviesListRoute = {
                     navController.navigate(route = Routes.MoviesList) {
-                        popUpTo(Routes.MovieDetails("")) { inclusive = true }
                     }
                 })
         }

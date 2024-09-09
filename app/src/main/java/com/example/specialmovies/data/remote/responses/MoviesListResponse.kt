@@ -4,59 +4,60 @@ import com.google.gson.annotations.SerializedName
 
 data class MoviesListResponse(
     @SerializedName("page")
-    val page: Int?,
+    val page: Int=1,
 
-    @SerializedName("result")
-    val result: List<Movie>?,
+    @SerializedName("results")
+    val result: List<Movie> = arrayListOf(),
 
     @SerializedName("total_pages")
-    val totalPages: Long?,
+    val totalPages: Long=2,
 
     @SerializedName("total_results")
-    val totalResults: Long?,
+    val totalResults: Long=21,
+
 )
 
 data class Movie(
     @SerializedName("adult")
-    val adult: Boolean?,
+    val adult: Boolean=true,
 
     @SerializedName("backdrop_path")
-    val backdropPath: String?,
+    val backdropPath: String="",
 
     @SerializedName("id")
-    val id: Long?,
+    val id: Long=1,
 
     @SerializedName("original_language")
-    val originalLanguage: String?,
+    val originalLanguage: String="",
 
     @SerializedName("original_title")
-    val originalTitle: String?,
+    val originalTitle: String="",
 
     @SerializedName("overview")
-    val overview: String?,
+    val overview: String="",
 
     @SerializedName("popularity")
-    val popularity: Double?,
+    val popularity: Double=1.2,
 
     @SerializedName("poster_path")
-    val posterPath: String?,
+    val posterPath: String="",
 
     @SerializedName("release_date")
-    val releaseDate: String?,
+    val releaseDate: String="",
 
     @SerializedName("title")
-    val title: String?,
+    val title: String="",
 
     @SerializedName("video")
-    val video: Boolean?,
+    val video: Boolean=true,
 
     @SerializedName("vote_average")
-    val voteAverage: Double?,
+    val voteAverage: Double=1.2,
 
     @SerializedName("vote_count")
-    val voteCount: Long?,
+    val voteCount: Long=1,
 
     @SerializedName("genre_ids")
-    val genreIds: List<Long>?
+    val genreIds: List<Long> = arrayListOf(),
 
     )
