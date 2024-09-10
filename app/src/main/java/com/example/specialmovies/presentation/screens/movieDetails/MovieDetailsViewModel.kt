@@ -30,6 +30,7 @@ class MovieDetailsViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val response = movieRepository.getMovieDetails(movieDetailsId)
+                if (response != null)
                     _screenState.update { state ->
                         state.copy(state = DetailsState.Success, data = response)
                     }
@@ -43,16 +44,16 @@ class MovieDetailsViewModel @Inject constructor(
 
     fun onUiEvent(movieDetailsUiEvent: MovieDetailsUiEvent) {
         when (movieDetailsUiEvent) {
-            MovieDetailsUiEvent.AddMovieToFavorites -> {
+            is MovieDetailsUiEvent.AddMovieToFavorites -> {
 
             }
 
-            MovieDetailsUiEvent.RemoveMovieToFavorites -> {
+            is MovieDetailsUiEvent.RemoveMovieToFavorites -> {
 
             }
 
-            MovieDetailsUiEvent.ReloadMovieDetails -> {
-//                callMovieDetails()
+            is MovieDetailsUiEvent.ReloadMovieDetails -> {
+                callMovieDetails(movieDetailsId = movieDetailsUiEvent.movieId)
             }
         }
     }

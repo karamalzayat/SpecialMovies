@@ -9,20 +9,27 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -31,6 +38,7 @@ import com.example.specialmovies.R
 import com.example.specialmovies.data.remote.responses.MovieDetailsResponse
 import com.example.specialmovies.presentation.screens.movieDetails.events.DetailsState
 import com.example.specialmovies.presentation.screens.movieDetails.events.MovieDetailsUiEvent
+import com.example.specialmovies.ui.theme.Pink40
 
 @Composable
 fun MovieDetailsScreen(
@@ -42,10 +50,14 @@ fun MovieDetailsScreen(
     }
     val state = viewModel.screenState.collectAsState().value
 
+    val isFavorite = remember { mutableStateOf(true) }
+
     Box(
         modifier = Modifier
+            .background(Pink40, RoundedCornerShape(8.dp))
             .fillMaxSize()
-            .background(Color.White)
+            .padding(16.dp)
+
     ) {
         when (state.state) {
             is DetailsState.Loading -> {
@@ -57,12 +69,13 @@ fun MovieDetailsScreen(
                     fontSize = 22.sp,
                     text = stringResource(id = R.string.loading)
                 )
+
             }
 
             is DetailsState.Error -> {
                 Button(modifier = Modifier.align(Alignment.Center),
                     onClick = {
-                 viewModel.onUiEvent(MovieDetailsUiEvent.ReloadMovieDetails)
+                        viewModel.onUiEvent(MovieDetailsUiEvent.ReloadMovieDetails(movieId))
                     }
                 ) {
                     Text(
@@ -74,18 +87,34 @@ fun MovieDetailsScreen(
 
             is DetailsState.Success -> {
                 val movie = state.data as MovieDetailsResponse
+                val scrollState = rememberScrollState()
+
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(Color.White)
+                        .padding(top = 36.dp)
+                        .verticalScroll(scrollState)
+                        .background(Color.White, shape = RoundedCornerShape(16.dp))
+                        .padding(16.dp)
                 ) {
                     Spacer(modifier = Modifier.height(8.dp))
                     Image(
                         modifier = Modifier
                             .height(300.dp)
-                            .fillMaxWidth(),
+                            .fillMaxWidth().background(color = Color.DarkGray, shape = RoundedCornerShape(8.dp)),
                         painter = rememberAsyncImagePainter("https://image.tmdb.org/t/p/w300" + movie.posterPath),
                         contentDescription = movie.title
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    FavoriteToggleButton(
+                        modifier = Modifier
+                            .align(Alignment.End)
+                            .padding(end = 16.dp),
+                        isFavorite = isFavorite.value,
+                        onToggleFavorite = {
+                            isFavorite.value = !isFavorite.value
+                            viewModel.onUiEvent(MovieDetailsUiEvent.AddMovieToFavorites(movieId))
+                        }
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
@@ -131,10 +160,10 @@ fun MovieDetailsScreen(
                     Text(
                         text = stringResource(id = R.string.over_view),
                         style = TextStyle(
-                            color = Color.DarkGray,
+                            color = Color.Black,
                             fontFamily = FontFamily.Serif,
                             fontWeight = FontWeight(500),
-                            fontSize = 14.sp
+                            fontSize = 16.sp
                         )
                     )
                     Text(
@@ -146,20 +175,33 @@ fun MovieDetailsScreen(
                         text = movie.overview,
                         style = TextStyle(
                             color = Color.DarkGray,
-                            fontFamily = FontFamily.SansSerif,
-                            fontWeight = FontWeight(400),
-                            fontSize = 14.sp
+                            fontFamily = FontFamily.Serif,
+                            fontWeight = FontWeight(300),
+                            fontSize = 16.sp
                         )
                     )
+
                 }
             }
         }
-    }
 
+    }
 }
 
-@Preview
+
 @Composable
-fun DashboardStartScreenPreview() {
-    MovieDetailsScreen(movieId = 1)
+fun FavoriteToggleButton(isFavorite: Boolean, onToggleFavorite: () -> Unit, modifier: Modifier) {
+    IconButton(modifier = modifier, onClick = onToggleFavorite) {
+        Icon(
+            modifier = Modifier
+                .width(34.dp)
+                .height(34.dp),
+            painter = if (isFavorite) {
+                painterResource(id = R.drawable.remove_favoriet) // Replace with your filled favorite icon
+            } else {
+                painterResource(id = R.drawable.add_to_favorites) // Replace with your outlined favorite icon
+            },
+            contentDescription = if (isFavorite) "Remove from Favorites" else "Add to Favorites",
+        )
+    }
 }

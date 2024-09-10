@@ -35,6 +35,7 @@ import com.example.specialmovies.R
 import com.example.specialmovies.data.remote.responses.Movie
 import com.example.specialmovies.presentation.screens.movies.events.ListState
 import com.example.specialmovies.presentation.screens.movies.events.MoviesUiEvent
+import com.example.specialmovies.ui.theme.Pink40
 
 @Composable
 fun MoviesScreen(
@@ -45,8 +46,9 @@ fun MoviesScreen(
     val state = viewModel.screenState.collectAsStateWithLifecycle()
     Box(
         modifier = Modifier
+            .background(Pink40, RoundedCornerShape(8.dp))
             .fillMaxSize()
-            .background(Color.White)
+            .padding(16.dp)
     ) {
         when (state.value.state) {
             is ListState.Error -> {
@@ -81,9 +83,9 @@ fun MoviesScreen(
                 moviesList.addAll(state.value.data as List<Movie>)
                 Box {
                     LazyColumn(
-                        modifier = Modifier
+                        modifier = Modifier.padding(top = 36.dp)
                             .fillMaxSize()
-                            .background(Color.White),
+                            .background(Color.White, shape = RoundedCornerShape(16.dp)).padding(8.dp),
                         content = {
                             items(moviesList.size) { index ->
                                 if (index == moviesList.size - 1) {
@@ -122,7 +124,7 @@ fun MovieItem(movie: Movie, onClick: () -> Unit) {
 
             modifier = Modifier
                 .height(128.dp)
-                .width(128.dp),
+                .width(128.dp).background(color = Color.DarkGray, shape = RoundedCornerShape(8.dp)),
             painter = rememberAsyncImagePainter("https://image.tmdb.org/t/p/w300" + movie.posterPath),
             contentDescription = movie.title
         )

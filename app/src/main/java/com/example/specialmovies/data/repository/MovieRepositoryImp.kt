@@ -46,8 +46,8 @@ class MovieRepositoryImp @Inject constructor(
                    MovieDetailsResponse()
                 })!!
             }catch (e:Exception){
-                MovieDetailsResponse()
-            }
+                null
+            }!!
         }
     }
 
