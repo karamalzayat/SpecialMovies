@@ -20,6 +20,7 @@ picasso = "2.71828"
 logging-interceptor = "4.8.0"
 room-runtime = "2.6.1"
 kotlinx-coroutines-android = "1.8.1"
+coil-compose = "2.7.0"
 
 
 
@@ -56,6 +57,8 @@ androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref =
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room-runtime" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room-runtime" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines-android" }
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil-compose" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

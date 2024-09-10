@@ -25,16 +25,16 @@ data class Movie(
     val backdropPath: String="",
 
     @SerializedName("id")
-    val id: Long=1,
+    val id: Long=533535,
 
     @SerializedName("original_language")
-    val originalLanguage: String="",
+    val originalLanguage: String="english",
 
     @SerializedName("original_title")
-    val originalTitle: String="",
+    val originalTitle: String="Deadpool & Wolverine",
 
     @SerializedName("overview")
-    val overview: String="",
+    val overview: String="A listless Wade Wilson toils away in civilian life with his days as the morally flexible mercenary, Deadpool, behind him. But when his homeworld faces an existential threat, Wade must reluctantly suit-up again with an even more reluctant Wolverine",
 
     @SerializedName("popularity")
     val popularity: Double=1.2,
@@ -43,19 +43,19 @@ data class Movie(
     val posterPath: String="",
 
     @SerializedName("release_date")
-    val releaseDate: String="",
+    val releaseDate: String="2024-07-24",
 
     @SerializedName("title")
-    val title: String="",
+    val title: String="Deadpool & Wolverine",
 
     @SerializedName("video")
     val video: Boolean=true,
 
     @SerializedName("vote_average")
-    val voteAverage: Double=1.2,
+    val voteAverage: Double=7.744,
 
     @SerializedName("vote_count")
-    val voteCount: Long=1,
+    val voteCount: Long=2733,
 
     @SerializedName("genre_ids")
     val genreIds: List<Long> = arrayListOf(),

@@ -10,7 +10,7 @@ import javax.inject.Singleton
 abstract class MovieRepository {
     abstract suspend fun getPopularMovies(page: Int): MoviesListResponse
 
-    abstract suspend fun getMovieDetails(id: Int): MovieDetailsResponse
+    abstract suspend fun getMovieDetails(id: Long): MovieDetailsResponse
 
     abstract suspend fun saveFavorite(movie: MovieEntity)
 

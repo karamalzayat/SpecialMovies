@@ -8,12 +8,12 @@ import com.example.specialmovies.presentation.screens.movies.MoviesScreen
 internal class MoviesListNavigationFactory : ComposeNavigationFactory {
 
     override fun create(navGraphBuilder: NavGraphBuilder, navController: NavController) {
-        navGraphBuilder.composable<Routes.MoviesList> {
+        navGraphBuilder.composable(route = "moviesList") {
             MoviesScreen(
-                onNavigateToMovieDetailsRoute = {
-                    navController.navigate(route = Routes.MovieDetails("154989")) {
-                    }
-                })
+                onNavigateToMovieDetailsRoute = { movieId ->
+                    navController.navigate("movieDetails/$movieId")
+                }
+            )
         }
     }
 }

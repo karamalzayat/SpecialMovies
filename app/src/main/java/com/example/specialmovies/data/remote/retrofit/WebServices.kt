@@ -16,7 +16,8 @@ interface WebServices {
 
     @GET("movie/{id}")
     suspend fun getMovieDetails(
-        @Path("id") movieId: Int,
+        @Path("id") movieId: Long,
         @Query("api_key") apiKey: String
     ): Response<MovieDetailsResponse>
+
 }

@@ -6,6 +6,9 @@
     <string name="error_message">Something went wrong</string>
     <string name="reload">Reload</string>
     <string name="loading">loading..</string>
+    <string name="votes_count">Votes Count: </string>
+    <string name="over_view">OverView: </string>
+
 
 
 </resources>
