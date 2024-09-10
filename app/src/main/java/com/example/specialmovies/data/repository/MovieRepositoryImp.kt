@@ -28,8 +28,8 @@ class MovieRepositoryImp @Inject constructor(
                 } else {
                     MoviesListResponse()
                 })!!
-            }catch (e:Exception){
-              MoviesListResponse()
+            } catch (e: Exception) {
+                MoviesListResponse()
             }
         }
     }
@@ -43,25 +43,25 @@ class MovieRepositoryImp @Inject constructor(
                 (if (response.isSuccessful) {
                     response.body()
                 } else {
-                   MovieDetailsResponse()
+                    MovieDetailsResponse()
                 })!!
-            }catch (e:Exception){
+            } catch (e: Exception) {
                 null
             }!!
         }
     }
 
     // Save Favorite Movie Locally
-    override suspend fun saveFavorite(movie: MovieEntity) {
+    override suspend fun saveFavorite(movie: MovieDetailsResponse) {
         withContext(Dispatchers.IO) {
-            movieDao.insertFavorite(movie)
+            movieDao.insertFavorite(movieDetailsToMovieEntity(movie))
         }
     }
 
     // Remove Favorite Movie from Local Database
-    override suspend fun removeFavorite(movie: MovieEntity) {
+    override suspend fun removeFavorite(movie: MovieDetailsResponse) {
         withContext(Dispatchers.IO) {
-            movieDao.deleteFavorite(movie)
+            movieDao.deleteFavorite(movieDetailsToMovieEntity(movie))
         }
     }
 
@@ -77,5 +77,16 @@ class MovieRepositoryImp @Inject constructor(
         return withContext(Dispatchers.IO) {
             movieDao.getFavoriteById(id) != null
         }
+    }
+
+    private fun movieDetailsToMovieEntity(movieDetailsResponse: MovieDetailsResponse): MovieEntity {
+
+        return MovieEntity(
+            id = movieDetailsResponse.id,
+            title = movieDetailsResponse.title,
+            voteAverage = movieDetailsResponse.voteAverage,
+            releaseDate = movieDetailsResponse.releaseDate,
+            posterPath = movieDetailsResponse.posterPath
+        )
     }
 }

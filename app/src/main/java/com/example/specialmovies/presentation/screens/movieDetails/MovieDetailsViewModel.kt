@@ -2,6 +2,7 @@ package com.example.specialmovies.presentation.screens.movieDetails
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.specialmovies.data.remote.responses.MovieDetailsResponse
 import com.example.specialmovies.data.repository.MovieRepository
 import com.example.specialmovies.presentation.screens.movieDetails.events.DetailsState
 import com.example.specialmovies.presentation.screens.movieDetails.events.MovieDetailsState
@@ -42,13 +43,27 @@ class MovieDetailsViewModel @Inject constructor(
         }
     }
 
+
+    private fun updateFavoritesList(addToFavorites: Boolean, movie: MovieDetailsResponse) {
+        if (addToFavorites) {
+            viewModelScope.launch {
+                movieRepository.saveFavorite(movie)
+            }
+        } else {
+            viewModelScope.launch {
+                movieRepository.removeFavorite(movie)
+            }
+        }
+    }
+
     fun onUiEvent(movieDetailsUiEvent: MovieDetailsUiEvent) {
         when (movieDetailsUiEvent) {
             is MovieDetailsUiEvent.AddMovieToFavorites -> {
-
+                updateFavoritesList(true, movieDetailsUiEvent.movie)
             }
 
             is MovieDetailsUiEvent.RemoveMovieToFavorites -> {
+                updateFavoritesList(false, movieDetailsUiEvent.movie)
 
             }
 

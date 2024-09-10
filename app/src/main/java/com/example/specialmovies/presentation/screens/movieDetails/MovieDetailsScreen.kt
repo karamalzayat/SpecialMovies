@@ -50,7 +50,7 @@ fun MovieDetailsScreen(
     }
     val state = viewModel.screenState.collectAsState().value
 
-    val isFavorite = remember { mutableStateOf(true) }
+    val isFavorite = remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
@@ -113,7 +113,12 @@ fun MovieDetailsScreen(
                         isFavorite = isFavorite.value,
                         onToggleFavorite = {
                             isFavorite.value = !isFavorite.value
-                            viewModel.onUiEvent(MovieDetailsUiEvent.AddMovieToFavorites(movieId))
+                            if (!isFavorite.value){
+                                viewModel.onUiEvent(MovieDetailsUiEvent.RemoveMovieToFavorites(movie))
+                            }else{
+                                viewModel.onUiEvent(MovieDetailsUiEvent.AddMovieToFavorites(movie))
+
+                            }
                         }
                     )
                     Spacer(modifier = Modifier.height(8.dp))

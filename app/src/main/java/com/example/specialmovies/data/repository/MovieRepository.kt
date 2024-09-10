@@ -12,9 +12,9 @@ abstract class MovieRepository {
 
     abstract suspend fun getMovieDetails(id: Long): MovieDetailsResponse
 
-    abstract suspend fun saveFavorite(movie: MovieEntity)
+    abstract suspend fun saveFavorite(movie: MovieDetailsResponse)
 
-    abstract suspend fun removeFavorite(movie: MovieEntity)
+    abstract suspend fun removeFavorite(movie: MovieDetailsResponse)
 
     abstract suspend fun getFavoriteMovies(): List<MovieEntity>
     abstract suspend fun isFavoriteMovie(id: Int): Boolean
