@@ -50,8 +50,8 @@ fun MovieDetailsScreen(
         viewModel.callMovieDetails(movieId)
     }
     val state = viewModel.screenState.collectAsState().value
+    val isFavorite = remember { mutableStateOf(false) }
 
-    val isFavorite = remember { mutableStateOf(true) }
 
     Box(
         modifier = Modifier
@@ -61,6 +61,7 @@ fun MovieDetailsScreen(
 
     ) {
         when (state.state) {
+
             is DetailsState.Loading -> {
                 Text(
                     modifier = Modifier.align(Alignment.Center),
@@ -89,7 +90,6 @@ fun MovieDetailsScreen(
             is DetailsState.Success -> {
                 val movie = state.data as MovieDetailsResponse
                 val scrollState = rememberScrollState()
-
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -107,24 +107,19 @@ fun MovieDetailsScreen(
                         painter = rememberAsyncImagePainter("https://image.tmdb.org/t/p/w300" + movie.posterPath),
                         contentDescription = movie.title
                     )
+
                     Spacer(modifier = Modifier.height(8.dp))
                     FavoriteToggleButton(
                         modifier = Modifier
                             .align(Alignment.End)
                             .padding(end = 16.dp),
-                        isFavorite = state.state.isFavorite && isFavorite.value,
+                        isFavorite = isFavorite.value || state.state.isFavorite,
                         onToggleFavorite = {
-                            if (!(state.state.isFavorite && isFavorite.value)) {
-                                isFavorite.value = true
-                            } else if(!isFavorite.value) {
-                                isFavorite.value = true
-                            }else{
-                                isFavorite.value=false
-                            }
-                            if (!isFavorite.value) {
-                                viewModel.onUiEvent(MovieDetailsUiEvent.RemoveMovieToFavorites(movie))
-                            } else {
+                            isFavorite.value = !(isFavorite.value || state.state.isFavorite)
+                            if (isFavorite.value) {
                                 viewModel.onUiEvent(MovieDetailsUiEvent.AddMovieToFavorites(movie))
+                            } else {
+                                viewModel.onUiEvent(MovieDetailsUiEvent.RemoveMovieToFavorites(movie))
 
                             }
                         }

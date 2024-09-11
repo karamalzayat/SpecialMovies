@@ -1,9 +1,7 @@
 package com.example.specialmovies.presentation.screens.favorites
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,11 +14,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -30,7 +25,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -38,7 +32,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
 import com.example.specialmovies.R
 import com.example.specialmovies.data.local.entity.MovieEntity
-import com.example.specialmovies.data.remote.responses.Movie
 import com.example.specialmovies.presentation.screens.favorites.events.FavoritesListState
 import com.example.specialmovies.presentation.screens.movieDetails.FavoriteToggleButton
 import com.example.specialmovies.ui.theme.Pink40
@@ -51,6 +44,7 @@ fun FavoritesScreen(
 
     val state = viewModel.screenState.collectAsStateWithLifecycle()
     val moviesList = ArrayList<MovieEntity>()
+
 
     Box(
         modifier = Modifier
@@ -96,7 +90,8 @@ fun FavoritesScreen(
                             items(moviesList.size) { index ->
                                 MovieItem(
                                     movie = moviesList[index],
-                                    onRemoveFavorite = { viewModel.onUiEvent(moviesList[index]) }
+                                    onRemoveFavorite = { viewModel.removeFromDB(moviesList[index]) },
+                                    onAddFavorite = { viewModel.addToDB(moviesList[index]) }
                                 )
                             }
                         },
@@ -112,8 +107,12 @@ fun FavoritesScreen(
 @Composable
 fun MovieItem(
     movie: MovieEntity,
-    onRemoveFavorite: () -> Unit
+    onRemoveFavorite: () -> Unit,
+    onAddFavorite: () -> Unit
+
 ) {
+    val isFavorite = remember { mutableStateOf(true) }
+
     Row(
         modifier = Modifier
             .wrapContentHeight()
@@ -129,9 +128,14 @@ fun MovieItem(
             modifier = Modifier
                 .align(Alignment.Top)
                 .padding(end = 16.dp),
-            isFavorite = true,
+            isFavorite = isFavorite.value,
             onToggleFavorite = {
-                onRemoveFavorite()
+                isFavorite.value = !isFavorite.value
+                if (!isFavorite.value){
+                    onRemoveFavorite()
+                }else{
+                    onAddFavorite()
+                }
             }
         )
         Image(

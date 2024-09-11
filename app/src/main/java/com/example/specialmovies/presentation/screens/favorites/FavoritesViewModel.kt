@@ -27,7 +27,6 @@ class FavoritesViewModel @Inject constructor(
     private var allMovies = mutableListOf<MovieEntity>()
 
 
-
     init {
         callMovies()
     }
@@ -52,9 +51,15 @@ class FavoritesViewModel @Inject constructor(
         }
     }
 
-    fun onUiEvent(movieEntity: MovieEntity) {
+    fun removeFromDB(movieEntity: MovieEntity) {
         viewModelScope.launch {
             movieRepository.removeFavorite(movie = movieEntity)
+        }
+    }
+
+    fun addToDB(movieEntity: MovieEntity) {
+        viewModelScope.launch {
+            movieRepository.saveFavorite(movie = movieEntity)
         }
     }
 

@@ -34,7 +34,6 @@ class MovieDetailsViewModel @Inject constructor(
                 allFavoriteMovies.addAll(favoriteList)
             }
         }
-
     }
 
     fun callMovieDetails(movieDetailsId: Long) {
@@ -47,7 +46,7 @@ class MovieDetailsViewModel @Inject constructor(
             try {
                 val response = movieRepository.getMovieDetails(movieDetailsId)
                 allFavoriteMovies.forEach {
-                    if (it.id == response.id) favoriteMovie=true
+                    if (it.id == response.id) favoriteMovie = true
                 }
                 _screenState.update { state ->
                     state.copy(state = DetailsState.Success(favoriteMovie), data = response)
