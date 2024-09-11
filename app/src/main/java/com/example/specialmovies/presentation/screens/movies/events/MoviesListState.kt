@@ -9,6 +9,5 @@ sealed class ListState {
     data object Loading : ListState()
     data object Error : ListState()
     data object Success : ListState()
-    data object LoadNextMovies : ListState()
 
 }

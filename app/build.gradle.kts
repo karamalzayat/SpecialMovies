@@ -9,7 +9,7 @@ plugins {
 android {
     namespace = "com.example.specialmovies"
     compileSdk = 34
-    configurations.implementation{
+    configurations.implementation {
         exclude(group = "com.intellij", module = "annotations")
     }
     defaultConfig {
@@ -98,7 +98,11 @@ dependencies {
     //Room
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.compiler)
-     kapt(libs.androidx.room.compiler)
+    kapt(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
+
+    implementation(libs.androidx.paging.runtime)
+    implementation(libs.androidx.paging.compose)
+
 
 }

@@ -2,8 +2,13 @@ package com.example.specialmovies.data.repository
 
 
 import androidx.lifecycle.LiveData
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.example.specialmovies.data.local.dao.MovieDao
 import com.example.specialmovies.data.local.entity.MovieEntity
+import com.example.specialmovies.data.paging.MoviePagingSource
+import com.example.specialmovies.data.remote.responses.Movie
 import com.example.specialmovies.data.remote.responses.MovieDetailsResponse
 import com.example.specialmovies.data.remote.responses.MoviesListResponse
 import com.example.specialmovies.data.remote.retrofit.WebServices
@@ -21,6 +26,14 @@ class MovieRepositoryImp @Inject constructor(
 ) : MovieRepository() {
     private val apiKey: String = "b8d7f72abee18fd93012e158e9211297"
 
+    override suspend fun getMovies(): Flow<PagingData<Movie>> {
+        return Pager(
+            config = PagingConfig(pageSize = 20, prefetchDistance = 2),
+            pagingSourceFactory = {
+                MoviePagingSource(apiService)
+            }
+        ).flow
+    }
     override suspend fun getPopularMovies(page: Int): MoviesListResponse {
         return withContext(Dispatchers.IO) {
             try {

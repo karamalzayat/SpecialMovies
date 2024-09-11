@@ -2,67 +2,43 @@ package com.example.specialmovies.presentation.screens.movies
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.example.specialmovies.data.remote.responses.Movie
 import com.example.specialmovies.data.repository.MovieRepository
-import com.example.specialmovies.presentation.screens.movies.events.ListState
-import com.example.specialmovies.presentation.screens.movies.events.MoviesListState
-import com.example.specialmovies.presentation.screens.movies.events.MoviesUiEvent
+import com.example.specialmovies.domain.GetMovieUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MoviesViewModel @Inject constructor(
-    private val movieRepository: MovieRepository
+    private val movieRepository: MovieRepository,
+    private val getMoviesUseCase: GetMovieUseCase
 ) : ViewModel() {
-    private val _screenState: MutableStateFlow<MoviesListState<Any?>> =
-        MutableStateFlow(MoviesListState(null, ListState.Loading))
-    val screenState: StateFlow<MoviesListState<Any?>> = _screenState.asStateFlow()
-    private var currentPage = 1
-    private var isLoadingMore = false
-    private var allMovies = mutableListOf<Movie>()
+
+    private val _moviesState: MutableStateFlow<PagingData<Movie>> =
+        MutableStateFlow(value = PagingData.empty())
+    val moviesState: MutableStateFlow<PagingData<Movie>> get() = _moviesState
+
 
     init {
-
-        callMovies()
-    }
-    private fun callMovies() {
-        if (isLoadingMore) return
-        isLoadingMore = true
         viewModelScope.launch {
-            val response = movieRepository.getPopularMovies(currentPage)
-            if (response.result.isNotEmpty()) {
-                allMovies.addAll(response.result)
-                _screenState.update { state ->
-                    state.copy(state = ListState.Success, data = allMovies)
-                }
-                currentPage++
-            } else {
-                _screenState.update { state ->
-                    state.copy(state = ListState.Error)
-                }
-            }
-            isLoadingMore = false
+            getMovies()
         }
     }
 
-    fun onUiEvent(moviesUiEvent: MoviesUiEvent) {
-        when (moviesUiEvent) {
-            MoviesUiEvent.ReloadMoviesList -> {
-                _screenState.update { state ->
-                    state.copy(state = ListState.Loading)
-                }
-                callMovies()
+    private suspend fun getMovies() {
+        getMoviesUseCase.execute(Unit)
+            .distinctUntilChanged()
+            .cachedIn(viewModelScope)
+            .collect {
+                _moviesState.value = it
             }
-
-            is MoviesUiEvent.LoadNextPage -> {
-                callMovies()
-            }
-        }
     }
-
 }
+
+
+

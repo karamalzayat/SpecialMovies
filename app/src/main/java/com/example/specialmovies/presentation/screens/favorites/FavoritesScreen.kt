@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -115,38 +116,23 @@ fun MovieItem(
 
     Row(
         modifier = Modifier
-            .wrapContentHeight()
+            .height(128.dp)
             .fillMaxWidth()
             .padding(8.dp)
             .background(
                 color = Color.LightGray,
                 shape = RoundedCornerShape(8.dp)
             )
-            .padding(8.dp)
     ) {
-        FavoriteToggleButton(
-            modifier = Modifier
-                .align(Alignment.Top)
-                .padding(end = 16.dp),
-            isFavorite = isFavorite.value,
-            onToggleFavorite = {
-                isFavorite.value = !isFavorite.value
-                if (!isFavorite.value){
-                    onRemoveFavorite()
-                }else{
-                    onAddFavorite()
-                }
-            }
-        )
         Image(
             modifier = Modifier
-                .height(128.dp)
-                .width(128.dp)
+                .fillMaxHeight()
+                .width(128.dp).padding(1.dp)
                 .background(color = Color.DarkGray, shape = RoundedCornerShape(8.dp)),
             painter = rememberAsyncImagePainter("https://image.tmdb.org/t/p/w300" + movie.posterPath),
             contentDescription = movie.title
         )
-        Column(modifier = Modifier.padding(start = 16.dp)) {
+        Column(modifier = Modifier.padding(start = 8.dp, top = 8.dp, end = 8.dp)) {
             Text(
                 text = movie.title, style = TextStyle(
                     color = Color.Black,
@@ -175,6 +161,23 @@ fun MovieItem(
                     fontSize = 14.sp
                 )
             )
+
+            FavoriteToggleButton(
+                modifier = Modifier
+                    .align(Alignment.End)
+                    .padding( bottom = 4.dp),
+                isFavorite = isFavorite.value,
+                onToggleFavorite = {
+                    isFavorite.value = !isFavorite.value
+                    if (!isFavorite.value) {
+                        onRemoveFavorite()
+                    } else {
+                        onAddFavorite()
+                    }
+                }
+            )
         }
+
+
     }
 }

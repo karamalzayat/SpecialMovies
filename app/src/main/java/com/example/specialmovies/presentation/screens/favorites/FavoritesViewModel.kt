@@ -1,6 +1,5 @@
 package com.example.specialmovies.presentation.screens.favorites
 
-import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.specialmovies.data.local.entity.MovieEntity
