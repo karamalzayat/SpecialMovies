@@ -8,5 +8,6 @@ data class MovieDetailsState<T>(
 sealed class DetailsState {
     data object Loading : DetailsState()
     data object Error : DetailsState()
-    data object Success : DetailsState()
+    data class Success(val isFavorite:Boolean) : DetailsState()
+
 }

@@ -2,6 +2,7 @@ package com.example.specialmovies.presentation.screens.movieDetails
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.specialmovies.data.local.entity.MovieEntity
 import com.example.specialmovies.data.remote.responses.MovieDetailsResponse
 import com.example.specialmovies.data.repository.MovieRepository
 import com.example.specialmovies.presentation.screens.movieDetails.events.DetailsState
@@ -23,18 +24,35 @@ class MovieDetailsViewModel @Inject constructor(
     val screenState: StateFlow<MovieDetailsState<Any?>> = _screenState
 
 
+    private var favoriteMovie: Boolean = false
+
+    private var allFavoriteMovies = mutableListOf<MovieEntity>()
+
+    init {
+        viewModelScope.launch {
+            movieRepository.getFavoriteMovies().collect { favoriteList ->
+                allFavoriteMovies.addAll(favoriteList)
+            }
+        }
+
+    }
+
     fun callMovieDetails(movieDetailsId: Long) {
         if (_screenState.value.state is DetailsState.Success) return
         _screenState.update { state ->
             state.copy(state = DetailsState.Loading)
         }
         viewModelScope.launch {
+
             try {
                 val response = movieRepository.getMovieDetails(movieDetailsId)
-                if (response != null)
-                    _screenState.update { state ->
-                        state.copy(state = DetailsState.Success, data = response)
-                    }
+                allFavoriteMovies.forEach {
+                    if (it.id == response.id) favoriteMovie=true
+                }
+                _screenState.update { state ->
+                    state.copy(state = DetailsState.Success(favoriteMovie), data = response)
+                }
+
             } catch (e: Exception) {
                 _screenState.update { state ->
                     state.copy(state = DetailsState.Error)

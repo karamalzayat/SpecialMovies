@@ -9,6 +9,8 @@
     <string name="votes_count">Votes Count: </string>
     <string name="over_view">OverView: </string>
 
+    <string name="no_favorites">NO Favorites</string>
 
+    <string name="show_favorites">Show Favorites</string>
 
 </resources>

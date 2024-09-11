@@ -12,6 +12,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import com.example.specialmovies.presentation.navigation.FavoritesNavigationFactory
 import com.example.specialmovies.presentation.navigation.MovieDetailsNavigationFactory
 import com.example.specialmovies.presentation.navigation.MoviesListNavigationFactory
 import dagger.hilt.android.AndroidEntryPoint
@@ -43,6 +44,8 @@ fun MainAppNavHost(
     NavHost(navController, startDestination = "moviesList") {
         MoviesListNavigationFactory().create(this, navController)
         MovieDetailsNavigationFactory().create(this, navController)
+        FavoritesNavigationFactory().create(this, navController)
+
     }
 }
 

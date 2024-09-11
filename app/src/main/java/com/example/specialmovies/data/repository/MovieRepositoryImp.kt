@@ -1,12 +1,14 @@
 package com.example.specialmovies.data.repository
 
 
+import androidx.lifecycle.LiveData
 import com.example.specialmovies.data.local.dao.MovieDao
 import com.example.specialmovies.data.local.entity.MovieEntity
 import com.example.specialmovies.data.remote.responses.MovieDetailsResponse
 import com.example.specialmovies.data.remote.responses.MoviesListResponse
 import com.example.specialmovies.data.remote.retrofit.WebServices
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -58,6 +60,12 @@ class MovieRepositoryImp @Inject constructor(
         }
     }
 
+    override suspend fun saveFavorite(movie: MovieEntity) {
+        withContext(Dispatchers.IO) {
+            movieDao.insertFavorite(movie)
+        }
+    }
+
     // Remove Favorite Movie from Local Database
     override suspend fun removeFavorite(movie: MovieDetailsResponse) {
         withContext(Dispatchers.IO) {
@@ -65,8 +73,14 @@ class MovieRepositoryImp @Inject constructor(
         }
     }
 
+    override suspend fun removeFavorite(movie: MovieEntity) {
+        withContext(Dispatchers.IO) {
+            movieDao.deleteFavorite(movie)
+        }
+    }
+
     // Get Favorite Movies from Local Database
-    override suspend fun getFavoriteMovies(): List<MovieEntity> {
+    override suspend fun getFavoriteMovies(): Flow<List<MovieEntity>> {
         return withContext(Dispatchers.IO) {
             movieDao.getAllFavorites()
         }
@@ -80,13 +94,13 @@ class MovieRepositoryImp @Inject constructor(
     }
 
     private fun movieDetailsToMovieEntity(movieDetailsResponse: MovieDetailsResponse): MovieEntity {
-
         return MovieEntity(
             id = movieDetailsResponse.id,
             title = movieDetailsResponse.title,
             voteAverage = movieDetailsResponse.voteAverage,
             releaseDate = movieDetailsResponse.releaseDate,
-            posterPath = movieDetailsResponse.posterPath
+            posterPath = movieDetailsResponse.posterPath,
+            isFavorite = true
         )
     }
 }

@@ -1,5 +1,6 @@
-package com.example.specialmovies.presentation.screens.movies
+package com.example.specialmovies.presentation.screens.favorites
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,6 +19,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,26 +30,28 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
 import com.example.specialmovies.R
+import com.example.specialmovies.data.local.entity.MovieEntity
 import com.example.specialmovies.data.remote.responses.Movie
-import com.example.specialmovies.presentation.screens.movies.events.ListState
-import com.example.specialmovies.presentation.screens.movies.events.MoviesUiEvent
+import com.example.specialmovies.presentation.screens.favorites.events.FavoritesListState
+import com.example.specialmovies.presentation.screens.movieDetails.FavoriteToggleButton
 import com.example.specialmovies.ui.theme.Pink40
 
 @Composable
-fun MoviesScreen(
-    viewModel: MoviesViewModel = hiltViewModel(),
-    onNavigateToMovieDetailsRoute: (Long) -> Unit,
-    onNavigateToFavoritesRoute: () -> Unit
+fun FavoritesScreen(
+    viewModel: FavoritesViewModel = hiltViewModel(),
 ) {
-    val moviesList: ArrayList<Movie> = arrayListOf()
+
+
     val state = viewModel.screenState.collectAsStateWithLifecycle()
+    val moviesList = ArrayList<MovieEntity>()
+
     Box(
         modifier = Modifier
             .background(Pink40, RoundedCornerShape(8.dp))
@@ -52,46 +59,32 @@ fun MoviesScreen(
             .padding(16.dp)
     ) {
         when (state.value.state) {
-            is ListState.Error -> {
-                Button(modifier = Modifier.align(Alignment.Center),
-                    onClick = {
-                        viewModel.onUiEvent(MoviesUiEvent.ReloadMoviesList)
-                    }
-                ) {
-                    Text(
-                        modifier = Modifier.align(Alignment.CenterVertically),
-                        text = stringResource(id = R.string.reload)
-                    )
-                }
-                Button(modifier = Modifier.padding(16.dp).align(Alignment.BottomCenter).fillMaxWidth(),
-                    onClick = {
-                        onNavigateToFavoritesRoute.invoke()
-                    }
-                ) {
-                    Text(
-                        modifier = Modifier.align(Alignment.CenterVertically),
-                        text = stringResource(id = R.string.show_favorites)
-                    )
-                }
-            }
-
-            is ListState.LoadNextMovies -> {
-                moviesList.addAll(state.value.data as List<Movie>)
-            }
-
-            is ListState.Loading -> {
+            is FavoritesListState.Error -> {
                 Text(
                     modifier = Modifier.align(Alignment.Center),
+                    text = stringResource(id = R.string.no_favorites),
                     color = Color.Black,
                     fontFamily = FontFamily.Monospace,
                     fontWeight = FontWeight(700),
                     fontSize = 22.sp,
-                    text = stringResource(id = R.string.loading)
+                )
+
+            }
+
+            is FavoritesListState.Loading -> {
+                Text(
+                    modifier = Modifier.align(Alignment.Center),
+                    text = stringResource(id = R.string.no_favorites),
+                    color = Color.Black,
+                    fontFamily = FontFamily.Monospace,
+                    fontWeight = FontWeight(700),
+                    fontSize = 22.sp,
                 )
             }
 
-            is ListState.Success -> {
-                moviesList.addAll(state.value.data as List<Movie>)
+            is FavoritesListState.Success -> {
+                moviesList.clear()
+                moviesList.addAll(state.value.data as List<MovieEntity>)
                 Box {
                     LazyColumn(
                         modifier = Modifier
@@ -101,30 +94,15 @@ fun MoviesScreen(
                             .padding(8.dp),
                         content = {
                             items(moviesList.size) { index ->
-                                if (index == moviesList.size - 1) {
-                                    viewModel.onUiEvent(MoviesUiEvent.LoadNextPage)
-                                }
                                 MovieItem(
                                     movie = moviesList[index],
-                                    onClick = {
-                                        onNavigateToMovieDetailsRoute.invoke(moviesList[index].id)
-                                    })
+                                    onRemoveFavorite = { viewModel.onUiEvent(moviesList[index]) }
+                                )
                             }
                         },
                     )
-                    Button(modifier = Modifier.padding(16.dp).align(Alignment.BottomCenter).fillMaxWidth(),
-                        onClick = {
-                            onNavigateToFavoritesRoute.invoke()
-                        }
-                    ) {
-                        Text(
-                            modifier = Modifier.align(Alignment.CenterVertically),
-                            text = stringResource(id = R.string.show_favorites)
-                        )
-                    }
+
                 }
-
-
             }
         }
     }
@@ -132,7 +110,10 @@ fun MoviesScreen(
 
 
 @Composable
-fun MovieItem(movie: Movie, onClick: () -> Unit) {
+fun MovieItem(
+    movie: MovieEntity,
+    onRemoveFavorite: () -> Unit
+) {
     Row(
         modifier = Modifier
             .wrapContentHeight()
@@ -143,10 +124,17 @@ fun MovieItem(movie: Movie, onClick: () -> Unit) {
                 shape = RoundedCornerShape(8.dp)
             )
             .padding(8.dp)
-            .clickable { onClick() }
     ) {
+        FavoriteToggleButton(
+            modifier = Modifier
+                .align(Alignment.Top)
+                .padding(end = 16.dp),
+            isFavorite = true,
+            onToggleFavorite = {
+                onRemoveFavorite()
+            }
+        )
         Image(
-
             modifier = Modifier
                 .height(128.dp)
                 .width(128.dp)
@@ -185,9 +173,4 @@ fun MovieItem(movie: Movie, onClick: () -> Unit) {
             )
         }
     }
-}
-
-@Preview
-@Composable
-fun DashboardStartScreenPreview() {
 }

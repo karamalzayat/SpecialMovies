@@ -12,6 +12,8 @@ internal class MoviesListNavigationFactory : ComposeNavigationFactory {
             MoviesScreen(
                 onNavigateToMovieDetailsRoute = { movieId ->
                     navController.navigate("movieDetails/$movieId")
+                }, onNavigateToFavoritesRoute = {
+                    navController.navigate("favoritesList")
                 }
             )
         }

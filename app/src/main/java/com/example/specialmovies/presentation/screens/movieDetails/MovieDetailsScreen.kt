@@ -39,6 +39,7 @@ import com.example.specialmovies.data.remote.responses.MovieDetailsResponse
 import com.example.specialmovies.presentation.screens.movieDetails.events.DetailsState
 import com.example.specialmovies.presentation.screens.movieDetails.events.MovieDetailsUiEvent
 import com.example.specialmovies.ui.theme.Pink40
+import java.util.function.Predicate.not
 
 @Composable
 fun MovieDetailsScreen(
@@ -50,7 +51,7 @@ fun MovieDetailsScreen(
     }
     val state = viewModel.screenState.collectAsState().value
 
-    val isFavorite = remember { mutableStateOf(false) }
+    val isFavorite = remember { mutableStateOf(true) }
 
     Box(
         modifier = Modifier
@@ -101,7 +102,8 @@ fun MovieDetailsScreen(
                     Image(
                         modifier = Modifier
                             .height(300.dp)
-                            .fillMaxWidth().background(color = Color.DarkGray, shape = RoundedCornerShape(8.dp)),
+                            .fillMaxWidth()
+                            .background(color = Color.DarkGray, shape = RoundedCornerShape(8.dp)),
                         painter = rememberAsyncImagePainter("https://image.tmdb.org/t/p/w300" + movie.posterPath),
                         contentDescription = movie.title
                     )
@@ -110,12 +112,18 @@ fun MovieDetailsScreen(
                         modifier = Modifier
                             .align(Alignment.End)
                             .padding(end = 16.dp),
-                        isFavorite = isFavorite.value,
+                        isFavorite = state.state.isFavorite && isFavorite.value,
                         onToggleFavorite = {
-                            isFavorite.value = !isFavorite.value
-                            if (!isFavorite.value){
-                                viewModel.onUiEvent(MovieDetailsUiEvent.RemoveMovieToFavorites(movie))
+                            if (!(state.state.isFavorite && isFavorite.value)) {
+                                isFavorite.value = true
+                            } else if(!isFavorite.value) {
+                                isFavorite.value = true
                             }else{
+                                isFavorite.value=false
+                            }
+                            if (!isFavorite.value) {
+                                viewModel.onUiEvent(MovieDetailsUiEvent.RemoveMovieToFavorites(movie))
+                            } else {
                                 viewModel.onUiEvent(MovieDetailsUiEvent.AddMovieToFavorites(movie))
 
                             }
@@ -202,9 +210,9 @@ fun FavoriteToggleButton(isFavorite: Boolean, onToggleFavorite: () -> Unit, modi
                 .width(34.dp)
                 .height(34.dp),
             painter = if (isFavorite) {
-                painterResource(id = R.drawable.remove_favoriet) // Replace with your filled favorite icon
+                painterResource(id = R.drawable.remove_favoriet)
             } else {
-                painterResource(id = R.drawable.add_to_favorites) // Replace with your outlined favorite icon
+                painterResource(id = R.drawable.add_to_favorites)
             },
             contentDescription = if (isFavorite) "Remove from Favorites" else "Add to Favorites",
         )
