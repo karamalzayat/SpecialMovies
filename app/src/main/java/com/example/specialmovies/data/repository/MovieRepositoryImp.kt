@@ -1,7 +1,6 @@
 package com.example.specialmovies.data.repository
 
 
-import androidx.lifecycle.LiveData
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData

@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.specialmovies.data.remote.responses.Movie
-import com.example.specialmovies.data.repository.MovieRepository
 import com.example.specialmovies.domain.GetMovieUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +14,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MoviesViewModel @Inject constructor(
-    private val movieRepository: MovieRepository,
     private val getMoviesUseCase: GetMovieUseCase
 ) : ViewModel() {
 

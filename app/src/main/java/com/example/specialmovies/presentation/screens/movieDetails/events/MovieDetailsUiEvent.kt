@@ -1,6 +1,5 @@
 package com.example.specialmovies.presentation.screens.movieDetails.events
 
-import com.example.specialmovies.data.remote.responses.Movie
 import com.example.specialmovies.data.remote.responses.MovieDetailsResponse
 
 sealed class MovieDetailsUiEvent {

@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -116,23 +115,24 @@ fun MovieItem(
 
     Row(
         modifier = Modifier
-            .height(128.dp)
+            .wrapContentHeight()
             .fillMaxWidth()
             .padding(8.dp)
             .background(
                 color = Color.LightGray,
                 shape = RoundedCornerShape(8.dp)
             )
+            .padding(8.dp)
     ) {
         Image(
             modifier = Modifier
-                .fillMaxHeight()
-                .width(128.dp).padding(1.dp)
+                .height(132.dp)
+                .width(128.dp)
                 .background(color = Color.DarkGray, shape = RoundedCornerShape(8.dp)),
             painter = rememberAsyncImagePainter("https://image.tmdb.org/t/p/w300" + movie.posterPath),
             contentDescription = movie.title
         )
-        Column(modifier = Modifier.padding(start = 8.dp, top = 8.dp, end = 8.dp)) {
+        Column(modifier = Modifier.fillMaxWidth().padding(start = 8.dp, top = 8.dp, end = 8.dp)) {
             Text(
                 text = movie.title, style = TextStyle(
                     color = Color.Black,
@@ -164,8 +164,7 @@ fun MovieItem(
 
             FavoriteToggleButton(
                 modifier = Modifier
-                    .align(Alignment.End)
-                    .padding( bottom = 4.dp),
+                    .align(Alignment.End),
                 isFavorite = isFavorite.value,
                 onToggleFavorite = {
                     isFavorite.value = !isFavorite.value
