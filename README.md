@@ -1,5 +1,5 @@
 special movie app with the latest update from google.
--compose iwth navigation 
+-compose with navigation 
 -lazy colomn with pagination
 -clean arch 
 -data base
