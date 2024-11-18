@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">SpecialMovies</string>
+
+    <string name="release_date">Release Date: </string>
+    <string name="rate">Rate: </string>
+    <string name="error_message">Something went wrong</string>
+    <string name="reload">Reload</string>
+    <string name="loading">loading..</string>
+    <string name="votes_count">Votes Count: </string>
+    <string name="over_view">OverView: </string>
+
+    <string name="no_favorites">NO Favorites</string>
+
+    <string name="show_favorites">Show Favorites</string>
+
 </resources>

@@ -1,12 +1,17 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    id("com.google.dagger.hilt.android")
+    id("kotlin-kapt")
+    kotlin("plugin.serialization") version "2.0.0"
 }
 
 android {
     namespace = "com.example.specialmovies"
     compileSdk = 34
-
+    configurations.implementation {
+        exclude(group = "com.intellij", module = "annotations")
+    }
     defaultConfig {
         applicationId = "com.example.specialmovies"
         minSdk = 24
@@ -47,10 +52,14 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
+}
+kapt {
+    correctErrorTypes = true
 }
 
 dependencies {
-
+    implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -65,5 +74,35 @@ dependencies {
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
+    implementation(libs.kotlinx.coroutines.android)
+
     debugImplementation(libs.androidx.ui.test.manifest)
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.coil.compose)
+
+    //navigation
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.hilt.hilt.navigation.compose)
+    //Retrofit
+    implementation(libs.gson)
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.picasso)
+    implementation(libs.logging.interceptor)
+
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.android.compiler)
+
+    implementation(libs.hilt.android.v244)
+    kapt(libs.hilt.android.compiler.v244)
+    //Room
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.compiler)
+    kapt(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
+
+    implementation(libs.androidx.paging.runtime)
+    implementation(libs.androidx.paging.compose)
+
+
 }
