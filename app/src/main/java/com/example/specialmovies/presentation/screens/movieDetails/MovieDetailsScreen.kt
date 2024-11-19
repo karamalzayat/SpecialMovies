@@ -39,6 +39,7 @@ import com.example.specialmovies.data.remote.responses.MovieDetailsResponse
 import com.example.specialmovies.presentation.screens.movieDetails.events.DetailsState
 import com.example.specialmovies.presentation.screens.movieDetails.events.MovieDetailsUiEvent
 import com.example.specialmovies.ui.theme.Pink40
+import java.util.function.Predicate.not
 
 @Composable
 fun MovieDetailsScreen(
